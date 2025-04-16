@@ -1,5 +1,7 @@
 import Link from 'next/link';
 import { ArrowRight, Code, Database, TestTube } from 'lucide-react';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { vscDarkPlus } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 
 export default function HomePage() {
   return (
@@ -95,8 +97,13 @@ export default function HomePage() {
             </Link>
           </div>
           <div className="flex-1 bg-fd-muted/30 p-6 rounded-xl overflow-auto">
-            <pre className="text-sm">
-              <code>{`class Product {
+            <SyntaxHighlighter
+              language="typescript"
+              style={vscDarkPlus}
+              customStyle={{ background: 'transparent', fontSize: '0.875rem' }}
+              showLineNumbers={false}
+            >
+{`class Product {
   @FactoryField((faker) => faker.number.int())
   id: number;
 
@@ -107,8 +114,8 @@ export default function HomePage() {
 const factory = new Factory(faker);
 const product = factory.new(Product);
 
-// product = { id: 42, name: "Ergonomic Wooden Chair" }`}</code>
-            </pre>
+// product = { id: 42, name: "Ergonomic Wooden Chair" }`}
+            </SyntaxHighlighter>
           </div>
         </div>
       </section>
