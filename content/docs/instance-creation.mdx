@@ -1,0 +1,55 @@
+---
+title: Instance Creation
+description: Different ways to create instances
+---
+
+## Difference between "new" and "create"
+
+The `new` method of the Factory utility creates a new instance of a class, while the `create` method creates an instance of the `Overridable` class that wraps the original instance. The `Overridable` class provides a `override` method that allows you to override the values of the instance.
+
+```typescript
+const factory = new Factory(faker);
+const overridable = factory.create(Product);
+const product = overridable.override(() => ({ name: 'Hello World' }));
+```
+
+In this example, the `name` field of the `Product` instance will be 'Hello World', regardless of the function provided in the `@FactoryField` decorator.
+
+## Overriding
+
+The `Overridable` class provides a way to override the values of an instance. You can use the `override` method and provide a function that returns an object with the fields to override. The function receives the current instance as a parameter.
+
+```typescript
+const overridable = factory.create(Product);
+const product = overridable.override((instance) => ({
+  name: 'New Name',
+}));
+```
+
+In this example, the `name` field of the `Product` instance will be 'New Name', regardless of the function provided in the `@FactoryField` decorator.
+
+## Creating Lists of Entities
+
+The Factory utility provides methods to create lists of entities, which can be useful for generating data for testing collections or arrays of objects.
+
+### newList Method
+
+The `newList` method allows you to create a list of new instances of a class.
+
+```typescript
+const factory = new Factory(faker);
+const amount = 3;
+const products = factory.newList(Product, amount);
+expect(products).toHaveLength(amount);
+```
+
+### createList Method
+
+The `createList` method allows you to create a `Overridable` instance of generated objects, which can then be overridden as needed.
+
+```typescript
+const factory = new Factory(faker);
+const amount = 3;
+const overridable = factory.createList(Product, amount);
+expect(overridable).toBeInstanceOf(Overridable);
+```

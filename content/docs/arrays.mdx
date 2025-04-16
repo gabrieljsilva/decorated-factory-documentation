@@ -1,0 +1,33 @@
+---
+title: Arrays
+description: Working with arrays of entities
+---
+
+## Arrays
+
+The Factory utility can also handle arrays of entities. You can specify an array of a certain entity in the `@FactoryRelationField` decorator.
+
+```typescript
+class Product {
+  @FactoryRelationField(() => [Review])
+  reviews: Review[];
+}
+```
+
+Then, you can create an instance of the main entity, and the Factory utility will automatically create an array of instances of the related entity.
+
+```typescript
+const factory = new Factory(faker);
+const product = factory.new(Product, {
+  reviews: [3],
+});
+```
+
+You can also specify the instances of array relationships
+
+```typescript
+const factory = new Factory(faker);
+const product = factory.new(Product, {
+  reviews: [1],
+});
+```

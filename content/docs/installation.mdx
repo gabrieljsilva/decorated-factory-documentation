@@ -1,0 +1,64 @@
+---
+title: Installation
+description: How to install Decorated Factory
+---
+
+## Installation
+First, you need to install and import `reflect-metadata`
+
+<Tabs items={['npm', 'yarn', 'pnpm', 'bun']}>
+    <Tab value="npm">
+        ```bash
+        npm install reflect-metadata --save-dev
+        ```
+    </Tab>
+    <Tab value="yarn">
+        ```bash
+        yarn add reflect-metadata --dev
+        ```
+    </Tab>
+    <Tab value="pnpm">
+        ```bash
+        pnpm install reflect-metadata --dev
+        ```
+    </Tab>
+    <Tab value="bun">
+        ```bash
+        bun install reflect-metadata --dev
+        ```
+    </Tab>
+</Tabs>
+
+PS: Ensure import `reflect-metadata` at the entry point of your application.
+
+```typescript
+import 'reflect-metadata';
+// rest of your code...
+```
+
+Then you can install the package
+
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
+
+<Tabs items={['npm', 'yarn', 'pnpm', 'bun']}>
+    <Tab value="npm">
+        ```bash
+        npm install decorated-factory @faker-js/faker --save-dev
+        ```
+    </Tab>
+    <Tab value="yarn">
+        ```bash
+        yarn add decorated-factory @faker-js/faker --dev
+        ```
+    </Tab>
+    <Tab value="pnpm">
+        ```bash
+        pnpm add decorated-factory @faker-js/faker --save-dev
+        ```
+    </Tab>
+    <Tab value="bun">
+        ```bash
+        bun install decorated-factory @faker-js/faker --dev
+        ```
+    </Tab>
+</Tabs>
