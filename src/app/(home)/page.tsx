@@ -1,11 +1,8 @@
 import Link from 'next/link';
 import { ArrowRight, Code, Database, TestTube } from 'lucide-react';
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { vscDarkPlus } from 'react-syntax-highlighter/dist/cjs/styles/prism';
+import CodeBlock from "@/components/code-block/code-block";
 
 export default function HomePage() {
-  const { theme } = useTheme();
-
   return (
     <main className="flex flex-1 flex-col items-center">
       {/* Hero Section */}
@@ -93,13 +90,9 @@ export default function HomePage() {
             </Link>
           </div>
           <div className="flex-1 bg-fd-muted/30 p-6 rounded-xl overflow-auto">
-            <SyntaxHighlighter
-              language="typescript"
-              style={vscDarkPlus}
-              customStyle={{ background: 'transparent', fontSize: '0.875rem' }}
-              showLineNumbers={false}
-            >
-{`class Product {
+            <CodeBlock
+                language={'typescript'}
+                code={`class Product {
   @FactoryField((faker) => faker.number.int())
   id: number;
 
@@ -111,7 +104,9 @@ const factory = new Factory(faker);
 const product = factory.new(Product);
 
 // product = { id: 42, name: "Ergonomic Wooden Chair" }`}
-            </SyntaxHighlighter>
+            >
+
+            </CodeBlock>
           </div>
         </div>
       </section>
