@@ -1,46 +1,54 @@
 ---
 title: Installation
-description: How to install Decorated Factory
+description: TypeScript decorator-based factory for generating mock objects with Faker.js
 ---
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
 
-## Installation
-First, you need to install and import `reflect-metadata`
+## Installation Guide
 
-<Tabs items={['npm', 'yarn', 'pnpm', 'bun']}>
+Follow this structured guide to set up Decorated Factory in your project.
+
+### 1. Core Dependency Installation
+
+First, install the required reflection metadata package:
+
+<Tabs items={['npm', 'yarn', 'pnpm']}>
     <Tab value="npm">
         ```bash
-        npm install reflect-metadata --save-dev
+        npm install reflect-metadata
         ```
     </Tab>
     <Tab value="yarn">
         ```bash
-        yarn add reflect-metadata --dev
+        yarn add reflect-metadata
         ```
     </Tab>
     <Tab value="pnpm">
         ```bash
-        pnpm install reflect-metadata --dev
-        ```
-    </Tab>
-    <Tab value="bun">
-        ```bash
-        bun install reflect-metadata --dev
+        pnpm add reflect-metadata
         ```
     </Tab>
 </Tabs>
 
-PS: Ensure import `reflect-metadata` at the entry point of your application.
+### 2. Dependency Configuration
+
+Add this essential initialization to your application entry file:
 
 ```typescript
-import 'reflect-metadata';
-// rest of your code...
+import "reflect-metadata";
+
+// Rest of your application initialization
 ```
 
-Then you can install the package
+<Callout type="warning" icon="⚠️">
+    Critical Setup: Metadata reflection must be initialized before any dependent components are loaded
+</Callout>
 
-import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
+### 3. Library Installation
 
-<Tabs items={['npm', 'yarn', 'pnpm', 'bun']}>
+Install the core package and Faker.js as development dependencies:
+
+<Tabs items={['npm', 'yarn', 'pnpm']}>
     <Tab value="npm">
         ```bash
         npm install decorated-factory @faker-js/faker --save-dev
@@ -48,17 +56,14 @@ import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
     </Tab>
     <Tab value="yarn">
         ```bash
-        yarn add decorated-factory @faker-js/faker --dev
+        yarn add decorated-factory @faker-js/faker -D
         ```
     </Tab>
     <Tab value="pnpm">
         ```bash
-        pnpm add decorated-factory @faker-js/faker --save-dev
-        ```
-    </Tab>
-    <Tab value="bun">
-        ```bash
-        bun install decorated-factory @faker-js/faker --dev
+        pnpm add decorated-factory @faker-js/faker -D
         ```
     </Tab>
 </Tabs>
+
+

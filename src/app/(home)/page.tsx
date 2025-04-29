@@ -4,6 +4,8 @@ import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 
 export default function HomePage() {
+  const { theme } = useTheme();
+
   return (
     <main className="flex flex-1 flex-col items-center">
       {/* Hero Section */}
@@ -27,19 +29,13 @@ export default function HomePage() {
             Get Started
             <ArrowRight className="ml-2 w-4 h-4" />
           </Link>
-          <Link
-            href="/docs/decorated-factory"
-            className="px-6 py-3 bg-fd-muted text-fd-foreground rounded-lg font-medium flex items-center justify-center hover:bg-fd-muted/80 transition-colors"
-          >
-            Documentation
-          </Link>
+
         </div>
       </section>
 
-      {/* Philosophy Section */}
       <section className="w-full bg-fd-muted/30 py-20">
         <div className="max-w-6xl mx-auto px-4 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-6">Our Philosophy</h2>
+          <h2 className="text-3xl md:text-4xl font-bold mb-6">Our Inspiration</h2>
           <p className="text-lg md:text-xl text-fd-muted-foreground mb-12 max-w-3xl mx-auto">
             Decorated Factory was inspired by the way queries are made in PrismaORM, focusing on a clean, 
             declarative API using TypeScript decorators to make generating test data simple and type-safe.
@@ -89,7 +85,7 @@ export default function HomePage() {
               Define your models once, and create instances with realistic data whenever you need them.
             </p>
             <Link
-              href="/docs/decorated-factory#usage"
+              href="/docs/core-concepts/basic-usage"
               className="text-fd-primary font-medium flex items-center hover:underline"
             >
               See more examples

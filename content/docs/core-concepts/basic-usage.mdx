@@ -1,0 +1,52 @@
+---
+title: Basic Usage
+description: A factory decorators for creating objects with faker data
+---
+
+## Entity Definition
+
+```typescript
+import { FactoryField } from 'decorated-factory';
+
+class Product {
+  @FactoryField(faker => faker.number.int())
+  id: number;
+
+  @FactoryField(faker => faker.commerce.productName())
+  name: string;
+}
+```
+
+## Immediate Instance Creation
+
+```typescript
+import { Factory } from 'decorated-factory';
+import { faker } from '@faker-js/faker';
+
+const factory = new Factory(faker);
+
+// Generate complete instance
+const product = factory.new(Product);
+console.log(product); // { id: 42, name: 'Ergonomic Steel Chair' }
+```
+
+## Overridable Instances
+
+```typescript
+const draft = factory.create(Product);
+
+// Customize with type-safe overrides
+const customized = draft.override((base) => ({
+  name: `Limited Edition ${base.name}`,
+  price: 99.99
+}));
+
+console.log(customized); // { id: 57, name: 'Limited Ergonomic Steel Chair', price: 99.99 }
+```
+
+<Callout>
+    Key Differences:
+    - `.new()`: Direct instance generation
+    - `.create()`: Returns Overridable wrapper for modifications
+</Callout>
+

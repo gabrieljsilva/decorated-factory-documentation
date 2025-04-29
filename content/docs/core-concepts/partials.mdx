@@ -1,0 +1,140 @@
+---
+title: Using Partials
+description: Generate entities with a subset of fields using Decorated Factory
+---
+
+In many testing scenarios, you may only need certain fields of an entity. The `partial` method lets you specify which fields to generate, omitting the rest. Partials work in all contexts: simple fields, one-to-one relations, one-to-many arrays, and nested relationships.
+
+## Basic Partial Example
+
+Generate only a subset of simple fields on an entity:
+
+```typescript
+class User {
+  @FactoryField(faker => faker.number.int())
+  id: number;
+
+  @FactoryField(faker => faker.person.firstName())
+  firstName: string;
+
+  @FactoryField(faker => faker.person.lastName())
+  lastName: string;
+
+  @FactoryField(faker => faker.internet.email())
+  email: string;
+}
+
+const factory = new Factory(faker);
+const partialUser = factory.partial(User, { id: true, email: true });
+
+console.log(partialUser.id);     // generated
+console.log(partialUser.email);  // generated
+console.log(partialUser.firstName); // undefined
+```
+
+## Partials with One-to-One Relationships
+
+Include related entities by specifying their fields as partials:
+
+```typescript
+class Profile {
+  @FactoryField(faker => faker.lorem.sentence())
+  bio: string;
+
+  @FactoryRelationField(() => Avatar)
+  avatar: Avatar;
+}
+
+class Avatar {
+  @FactoryField(faker => faker.image.url())
+  url: string;
+
+  @FactoryField(faker => faker.number.int())
+  width: number;
+}
+
+const partialProfile = factory.partial(Profile, {
+  bio: true,
+  avatar: { url: true }
+});
+
+console.log(partialProfile.bio);             // generated
+console.log(partialProfile.avatar.url);      // generated
+console.log(partialProfile.avatar.width);    // undefined
+```
+
+## Partials with One-to-Many Arrays
+
+Limit array size and fields per item:
+
+```typescript
+class Comment {
+  @FactoryField(faker => faker.number.int())
+  id: number;
+
+  @FactoryField(faker => faker.lorem.sentence())
+  text: string;
+}
+
+class Post {
+  @FactoryField(faker => faker.number.int())
+  id: number;
+
+  @FactoryRelationField(() => [Comment])
+  comments: Comment[];
+}
+
+const partialPost = factory.partial(Post, {
+  id: true,
+  comments: [2, { id: true }]
+});
+
+console.log(partialPost.comments.length);     // 2
+console.log(partialPost.comments[0].id);     // generated
+console.log(partialPost.comments[0].text);   // undefined
+```  
+
+## Nested Partial Structures
+
+Combine partials across multiple levels:
+
+```typescript
+class Photo {
+  @FactoryField(faker => faker.number.int())
+  id: number;
+
+  @FactoryField(faker => faker.image.url())
+  url: string;
+}
+
+class Album {
+  @FactoryRelationField(() => [Photo])
+  photos: Photo[];
+}
+
+class Gallery {
+  @FactoryRelationField(() => Album)
+  album: Album;
+
+  @FactoryField(faker => faker.lorem.words(3))
+  title: string;
+}
+
+const partialGallery = factory.partial(Gallery, {
+  title: true,
+  album: {
+    photos: [1, { url: true }]
+  }
+});
+
+console.log(partialGallery.title);            // generated
+console.log(partialGallery.album.photos[0].url); // generated
+console.log(partialGallery.album.photos[0].id);  // undefined
+```
+
+<Callout>
+    Key binding fields (`key` / `inverseKey`) are always included in partials to maintain referential integrity.
+</Callout>
+
+
+

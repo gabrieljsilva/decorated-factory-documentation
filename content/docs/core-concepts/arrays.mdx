@@ -1,0 +1,135 @@
+---
+title: Array Relationships
+description: Managing one-to-many relationships and array generation with Decorated Factory
+---
+
+So far, we have covered basic fields and simple relationships between entities. In this section, we will explore how to work with one-to-many relationships using arrays.
+
+## Defining a One-to-Many Relationship
+
+To declare a One-to-Many relationship, wrap the target entity in an array within the decorator. This tells the factory that the parent holds multiple instances of the child.
+
+```typescript
+class ProductImage {
+  @FactoryField(faker => faker.system.fileName())
+  filename: string;
+
+  @FactoryField(faker => faker.image.url())
+  url: string;
+}
+
+class OrderItem {
+  @FactoryField(faker => faker.commerce.productName())
+  productName: string;
+
+  @FactoryField(faker => faker.number.int())
+  quantity: number;
+
+  @FactoryRelationField(() => [ProductImage])
+  productImages: ProductImage[];
+}
+
+class Order {
+  @FactoryField(faker => faker.number.int())
+  id: number;
+
+  @FactoryRelationField(() => [OrderItem])
+  items: OrderItem[];
+}
+```
+
+## Generating Arrays of Related Entities
+
+Specify the number of child entities by passing an array whose first element is the desired count.
+
+```typescript
+const factory = new Factory(faker);
+const order = factory.new(Order, { items: [5] });
+
+console.log(order.items.length); // 5
+```
+
+## Nested Relationships
+
+Pass a second argument to configure the nested relationshi´s
+
+```typescript
+const factory = new Factory(faker);
+const order = factory.new(Order, {
+  items: [2, { productImages: [3] }]
+});
+
+// Generate one order with two items, each with three images
+order.items.forEach(item => {
+  console.log(item.productName);
+  console.log(item.productImages.length); // 3
+});
+```
+
+## Overriding Elements
+
+To override specific array elements or their properties, use `factory.create` to obtain an `Overridable` instance. Call override with a function that returns the desired overrides.
+
+```typescript
+const draft = factory.create(Order);
+const order = draft.override(instance => ({
+  items: [
+    { productName: 'Limited Edition', quantity: 1 },
+    ...instance.items.slice(1)
+  ]
+}));
+
+// First item uses custom values, remaining items follow factory defaults
+console.log(order.items[0].productName); // 'Limited Edition'
+console.log(order.items.length);         // same as default count
+```
+
+
+<Callout>
+    Custom key binding (using `key` and `inverseKey`) applies equally to one-to-one (1:1) and one-to-many (1:N) relationships.
+</Callout>
+
+## Generating Multiple Instances
+
+Beyond relational arrays, Decorated Factory provides methods to quickly create several standalone instances.
+
+### `newList`
+
+Use `newList` to generate an array of fresh entities without overrides:
+
+```typescript
+const factory = new Factory(faker);
+const products = factory.newList(Product, 5);
+
+console.log(products.length); // 5
+console.log(products[0].name); // generated product name
+```
+
+### `createList`
+
+Use `createList` to obtain an `Overridable` list, allowing post-generation overrides:
+
+```typescript
+const factory = new Factory(faker);
+const draft = factory.createList(User, 3);
+const users = draft.override(list => list.map(user => ({
+  ...user,
+  email: 'test@example.com'
+})));
+
+console.log(users.length); // 3
+console.log(users[0].email); // 'test@example.com'
+```
+
+In both scenarios you can pass a third argument to bring the related relationships:
+
+```typescript
+const factory = new Factory(faker);
+const draft = factory.createList(User, 3, {
+  photos: [2]
+});
+
+const users = factory.newList(User, 3, {
+    avatar: true
+})
+```
