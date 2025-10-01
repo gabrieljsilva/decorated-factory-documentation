@@ -99,7 +99,7 @@ export default function HomePage() {
 							<ArrowRight className="ml-1 w-4 h-4" />
 						</Link>
 					</div>
-					<div className="flex-1 bg-fd-muted/30 p-6 rounded-xl overflow-auto">
+					<div className="flex-1 bg-fd-muted/30 p-6 rounded-xl w-full">
 						<CodeBlock
 							language={"typescript"}
 							code={`
@@ -114,7 +114,8 @@ class Product {
 const factory = new Factory(faker);
 const product = factory.one(Product).make();
 
-// product = { id: 42, name: "Ergonomic Wooden Chair" }`}
+// product = { id: 42, name: "Ergonomic Wooden Chair" }
+						`}
 						/>
 					</div>
 				</div>

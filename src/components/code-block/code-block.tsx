@@ -19,7 +19,6 @@ export default function CodeBlock({ code, language }: CodeBlockProps) {
 		setIsMounted(true);
 	}, []);
 
-	// Use light theme by default until mounted on the client
 	const currentStyle = isMounted && theme === "dark" ? vscDarkPlus : oneLight;
 
 	return (
@@ -31,6 +30,7 @@ export default function CodeBlock({ code, language }: CodeBlockProps) {
 				fontSize: "0.875rem",
 				padding: "1rem",
 				borderRadius: "0.5rem",
+				maxWidth: "100%",
 			}}
 		>
 			{code}
