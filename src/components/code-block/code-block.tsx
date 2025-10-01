@@ -12,14 +12,14 @@ interface CodeBlockProps {
 }
 
 export default function CodeBlock({ code, language }: CodeBlockProps) {
-	const { theme } = useTheme();
+	const { resolvedTheme } = useTheme();
 	const [isMounted, setIsMounted] = useState(false);
 
 	useEffect(() => {
 		setIsMounted(true);
 	}, []);
 
-	const currentStyle = isMounted && theme === "dark" ? vscDarkPlus : oneLight;
+	const currentStyle = isMounted && resolvedTheme === "dark" ? vscDarkPlus : oneLight;
 
 	return (
 		<SyntaxHighlighter
