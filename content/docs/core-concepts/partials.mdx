@@ -1,139 +1,102 @@
 ---
-title: Using Partials
-description: Generate entities with a subset of fields using Decorated Factory
+title: Overriding and excluding
+description: Customize generated data with set() and without()
 ---
 
-In many testing scenarios, you may only need certain fields of an entity. The `partial` method lets you specify which fields to generate, omitting the rest. Partials work in all contexts: simple fields, one-to-one relations, one-to-many arrays, and nested relationships.
+In v2, partial selection is achieved via the fluent builder using `.set()` to override values and `.without()` to exclude fields. This works for simple fields, relations, arrays, and nested paths.
 
-## Basic Partial Example
+## Basic overrides
 
-Generate only a subset of simple fields on an entity:
-
-```typescript
+```ts
 class User {
-  @FactoryField(faker => faker.number.int())
+  @FactoryValue(faker => faker.number.int())
   id: number;
 
-  @FactoryField(faker => faker.person.firstName())
+  @FactoryValue(faker => faker.person.firstName())
   firstName: string;
 
-  @FactoryField(faker => faker.person.lastName())
+  @FactoryValue(faker => faker.person.lastName())
   lastName: string;
 
-  @FactoryField(faker => faker.internet.email())
+  @FactoryValue(faker => faker.internet.email())
   email: string;
 }
 
-const factory = new Factory(faker);
-const partialUser = factory.partial(User, { id: true, email: true });
-
-console.log(partialUser.id);     // generated
-console.log(partialUser.email);  // generated
-console.log(partialUser.firstName); // undefined
+const user = factory
+  .one(User)
+  .set('firstName', 'Jane')
+  .set('email', 'jane@example.com')
+  .make();
 ```
 
-## Partials with One-to-One Relationships
+## Excluding fields
 
-Include related entities by specifying their fields as partials:
+```ts
+const anonymous = factory
+  .one(User)
+  .without('email')
+  .without('lastName')
+  .make();
+```
 
-```typescript
-class Profile {
-  @FactoryField(faker => faker.lorem.sentence())
-  bio: string;
+## Nested overrides with relations
 
-  @FactoryRelationField(() => Avatar)
-  avatar: Avatar;
-}
-
+```ts
 class Avatar {
-  @FactoryField(faker => faker.image.url())
+  @FactoryValue(faker => faker.image.url())
   url: string;
 
-  @FactoryField(faker => faker.number.int())
+  @FactoryValue(faker => faker.number.int())
   width: number;
 }
 
-const partialProfile = factory.partial(Profile, {
-  bio: true,
-  avatar: { url: true }
-});
+class Profile {
+  @FactoryValue(faker => faker.lorem.sentence())
+  bio: string;
 
-console.log(partialProfile.bio);             // generated
-console.log(partialProfile.avatar.url);      // generated
-console.log(partialProfile.avatar.width);    // undefined
+  @FactoryType(() => Avatar)
+  avatar: Avatar;
+}
+
+const profile = factory
+  .one(Profile)
+  .with('avatar')
+  .set('avatar.url', 'https://cdn.example.com/avatar.png')
+  .without('avatar.width')
+  .make();
 ```
 
-## Partials with One-to-Many Arrays
+## Arrays: sizes and overrides
 
-Limit array size and fields per item:
-
-```typescript
+```ts
 class Comment {
-  @FactoryField(faker => faker.number.int())
+  @FactoryValue(faker => faker.number.int())
   id: number;
 
-  @FactoryField(faker => faker.lorem.sentence())
+  @FactoryValue(faker => faker.lorem.sentence())
   text: string;
 }
 
 class Post {
-  @FactoryField(faker => faker.number.int())
+  @FactoryValue(faker => faker.number.int())
   id: number;
 
-  @FactoryRelationField(() => [Comment])
+  @FactoryType(() => [Comment])
   comments: Comment[];
 }
 
-const partialPost = factory.partial(Post, {
-  id: true,
-  comments: [2, { id: true }]
-});
-
-console.log(partialPost.comments.length);     // 2
-console.log(partialPost.comments[0].id);     // generated
-console.log(partialPost.comments[0].text);   // undefined
-```  
-
-## Nested Partial Structures
-
-Combine partials across multiple levels:
-
-```typescript
-class Photo {
-  @FactoryField(faker => faker.number.int())
-  id: number;
-
-  @FactoryField(faker => faker.image.url())
-  url: string;
-}
-
-class Album {
-  @FactoryRelationField(() => [Photo])
-  photos: Photo[];
-}
-
-class Gallery {
-  @FactoryRelationField(() => Album)
-  album: Album;
-
-  @FactoryField(faker => faker.lorem.words(3))
-  title: string;
-}
-
-const partialGallery = factory.partial(Gallery, {
-  title: true,
-  album: {
-    photos: [1, { url: true }]
-  }
-});
-
-console.log(partialGallery.title);            // generated
-console.log(partialGallery.album.photos[0].url); // generated
-console.log(partialGallery.album.photos[0].id);  // undefined
+const post = factory
+  .one(Post)
+  .with(2, 'comments')
+  .set('comments.0.text', 'Pinned comment')
+  .without('comments.1.text')
+  .make();
 ```
 
 <Callout>
-    Key binding fields (`key` / `inverseKey`) are always included in partials to maintain referential integrity.
+  Rules:
+  - Call `.with()` before `.set()`/`.without()` when targeting nested paths.
+  - Supplying negative amounts to `.with()` throws.
 </Callout>
 
 

@@ -1,52 +1,53 @@
 ---
-title: Basic Usage
-description: A factory decorators for creating objects with faker data
+title: Basic usage
+description: Getting started with builder syntax and decorators
 ---
 
-## Entity Definition
+## Entity definition
 
-```typescript
-import { FactoryField } from 'decorated-factory';
-
-class Product {
-  @FactoryField(faker => faker.number.int())
-  id: number;
-
-  @FactoryField(faker => faker.commerce.productName())
-  name: string;
-}
-```
-
-## Immediate Instance Creation
-
-```typescript
-import { Factory } from 'decorated-factory';
+```ts
+import 'reflect-metadata';
+import { Factory, FactoryValue } from 'decorated-factory';
 import { faker } from '@faker-js/faker';
 
 const factory = new Factory(faker);
 
-// Generate complete instance
-const product = factory.new(Product);
-console.log(product); // { id: 42, name: 'Ergonomic Steel Chair' }
+class Product {
+  @FactoryValue(faker => faker.number.int())
+  id: number;
+
+  @FactoryValue(faker => faker.commerce.productName())
+  name: string;
+}
 ```
 
-## Overridable Instances
+## Creating instances
 
-```typescript
-const draft = factory.create(Product);
+```ts
+// One instance
+const product = factory.one(Product).make();
 
-// Customize with type-safe overrides
-const customized = draft.override((base) => ({
-  name: `Limited Edition ${base.name}`,
-  price: 99.99
-}));
+// Many instances
+const products = factory.many(Product).make(5);
+```
 
-console.log(customized); // { id: 57, name: 'Limited Ergonomic Steel Chair', price: 99.99 }
+## Overriding and excluding
+
+Use the fluent builder to override or exclude fields. Call set/without after any relevant with() calls.
+
+```ts
+const customized = factory
+  .one(Product)
+  .set('name', 'Limited Edition Chair')
+  .make();
+
+const anonymous = factory
+  .one(Product)
+  .without('name')
+  .make();
 ```
 
 <Callout>
-    Key Differences:
-    - `.new()`: Direct instance generation
-    - `.create()`: Returns Overridable wrapper for modifications
+    In v2, the old .new()/.create() APIs are replaced by a fluent builder: .one()/.many() with .with(), .set(), .without(), and .make()/.plain().
 </Callout>
 

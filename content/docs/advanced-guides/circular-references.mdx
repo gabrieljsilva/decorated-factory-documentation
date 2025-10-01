@@ -1,0 +1,40 @@
+---
+title: Circular references
+description: Model and generate explicit circular relations safely
+---
+
+Use dot paths to explicitly opt into cycles. Only the branches you request are created.
+
+```ts
+class User {
+  @FactoryType(() => AutoIncrement)
+  id: number;
+
+  @FactoryValue(faker => faker.person.fullName())
+  name: string;
+
+  @FactoryType(() => Photo)
+  photo: Photo;
+}
+
+class Photo {
+  @FactoryType(() => AutoIncrement)
+  id: number;
+
+  @FactoryValue(faker => faker.image.url())
+  url: string;
+
+  @FactoryType(() => User)
+  user: User;
+}
+
+const circular = factory
+  .one(User)
+  .with('photo')
+  .with('photo.user')
+  .make();
+```
+
+<Callout>
+  Because relations are lazy and opt-in, there is no infinite recursion: only the explicitly requested nodes are built.
+</Callout>

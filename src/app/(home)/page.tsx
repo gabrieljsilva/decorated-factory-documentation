@@ -32,12 +32,10 @@ export default function HomePage() {
 			<section className="w-full bg-fd-muted/30 py-20">
 				<div className="max-w-6xl mx-auto px-4 text-center">
 					<h2 className="text-3xl md:text-4xl font-bold mb-6">
-						Our Inspiration
+						Built for Developer Experience
 					</h2>
 					<p className="text-lg md:text-xl text-fd-muted-foreground mb-12 max-w-3xl mx-auto">
-						Decorated Factory was inspired by the way queries are made in
-						PrismaORM, focusing on a clean, declarative API using TypeScript
-						decorators to make generating test data simple and type-safe.
+						Decorated Factory was crafted by developers, for developers. The focus is on a great DX/UX: a clean, declarative TypeScript API with intuitive decorators that make generating realistic test data fast, predictable, and type-safe—without extra boilerplate or hidden magic.
 					</p>
 
 					<div className="grid grid-cols-1 md:grid-cols-3 gap-8">

@@ -1,160 +1,45 @@
 ---
 title: Introduction
-description: A factory decorators for creating objects with faker data
+description: Declarative, type‑safe factory for generating realistic test data — what it is, why it helps, and when to use it.
 ---
 
-## Purpose
+## What is it?
 
-Decorated Factory is a tool for creating instances of classes, especially useful in testing scenarios where you need to generate data.
-It uses decorators to define how to generate data for each field of a class, also supports relationships between entities and arrays of entities.
+Decorated Factory combines lightweight metadata decorators with a fluent builder to describe how your entities should look and then materialize them on demand. You describe fields and relations once; the builder lets you opt‑in to exactly the parts you need for a given test or seeding scenario.
 
-**Inspiration**:
-The project draws direct inspiration from Prisma's fluent API for relationship management, combined with Faker.js' flexible data generation capabilities.
+---
 
+## When should you use it?
 
+Use Decorated Factory when you need:
 
-## Core Concepts
+- Realistic, structured data for unit and integration tests without brittle hand‑written mocks.
+- Deterministic yet flexible generation (override the few values that matter, keep the rest realistic).
+- Reusable blueprints for database seeders and fixtures across services.
+- Clear, explicit control over which relations are included in each scenario.
 
+It’s especially helpful in medium/large projects where test data tends to sprawl and duplicate across suites.
 
+---
 
-### Arrays
+## Why Decorated Factory?
 
-Generate arrays of related entities using array syntax:
+- Type‑safe paths with great IDE hints for nested fields (e.g. `photos.description`).
+- Lazy relations — nothing is created unless you ask for it.
+- No hidden globals — each builder is explicit and predictable.
+- Bring‑your‑own Faker — plug any `@faker-js/faker` locale or custom instance.
+- Works with plain objects or class instances.
 
-```typescript
-class Product {
-  @FactoryRelationField(() => [Review])
-  reviews: Review[];
-}
-```
+---
 
-Create multiple instances:
+## How it works (at a glance)
 
-```typescript
-const product = factory.new(Product, {
-  reviews: [3] // Generates 3 Review instances
-});
-```
+- Describe fields with decorators that tell the factory how to generate values.
+- Declare relationships between entities to form a graph.
+- Use a fluent builder to “query” that graph: opt‑in to relations, tweak or exclude fields, and finally materialize data.
 
-### Relationships
+This page focuses on the concepts and value proposition. For hands‑on usage, follow the links below.
 
-Define entity relationships with `@FactoryRelationField`:
+---
 
-```typescript
-class Review {
-  @FactoryField((faker) => faker.lorem.sentence())
-  content: string;
-}
-
-class Product {
-  @FactoryRelationField(() => Review)
-  review: Review;
-}
-```
-
-Generate nested instances:
-
-```typescript
-const product = factory.new(Product, {
-  review: true // Generates associated Review
-});
-```
-
-### Key Bindings
-
-Establish parent-child relationships with key binding:
-
-```typescript
-class Chapter {
-  @FactoryField((faker) => faker.number.int())
-  bookId: number;
-}
-
-class Book {
-  @FactoryRelationField(() => Chapter, {
-    key: "id",
-    inverseKey: "bookId"
-  })
-  chapter: Chapter;
-}
-```
-
-Automatic ID binding:
-
-```typescript
-const book = factory.new(Book, { chapter: true });
-console.log(book.chapter.bookId === book.id); // true
-```
-
-### Partials
-
-Generate partial entities using `factory.partial()`:
-
-```typescript
-class User {
-  @FactoryField((faker) => faker.person.email())
-  email: string;
-}
-
-const partialUser = factory.partial(User, {
-  email: true
-});
-```
-
-**Nested Partials**:
-
-```typescript
-const partialUser = factory.partial(User, {
-  photos: [
-    2,
-    { url: true }
-  ]
-});
-```
-
-**Key Binding in Partials**:
-Key properties are always included to maintain relationships:
-
-```typescript
-// Given Photo ↔ Comment relationship
-const partial = factory.partial(User, {
-  photos: [{ comments: [{ text: true }] }]
-});
-
-// Output includes photoId and userId automatically
-```
-
-## Advanced Usage
-
-### Instance Creation Methods
-
-| Method       | Returns          | Use Case                      |
-|--------------|------------------|-------------------------------|
-| `.new()`     | Concrete instance| Immediate object creation     |
-| `.create()`  | Overridable      | Delayed/modifiable creation  |
-
-**Example**:
-
-```typescript
-const overridable = factory.create(Product);
-const modified = overridable.override(() => ({ name: "Custom" }));
-```
-
-### Batch Creation
-
-Create multiple instances:
-
-```typescript
-// Immediate creation
-const products = factory.newList(Product, 5);
-
-// Overridable list
-const overridables = factory.createList(Product, 3);
-```
-
-## Type Safety
-
-Decorated Factory maintains strict type checking throughout:
-- Field overrides validate against original class structure
-- Relationship definitions enforce proper entity types
-- Partial selections maintain optionality semantics
+Looking for API details or examples? Start with the Core Concepts and follow through to the Advanced Guides for specific scenarios.

@@ -1,0 +1,76 @@
+---
+title: Nested relationships
+description: Use dot-paths with .with() to generate deep graphs on demand
+---
+
+Request deep relations via dot paths. Only requested branches are materialized.
+
+```ts
+class Upload {
+  @FactoryValue(faker => faker.image.url())
+  url: string;
+}
+
+class Photo {
+  @FactoryValue(faker => faker.lorem.sentence())
+  description: string;
+
+  @FactoryType(() => Upload)
+  upload: Upload;
+}
+
+class User {
+  @FactoryType(() => AutoIncrement)
+  id: number;
+
+  @FactoryValue(faker => faker.person.fullName())
+  name: string;
+
+  @FactoryType(() => [Photo])
+  photos: Photo[];
+}
+
+const complexUser = factory
+  .one(User)
+  .with(3, 'photos')
+  .with('photos.upload')
+  .make();
+```
+
+Multiple nested arrays are supported:
+
+```ts
+class Tag {
+  @FactoryValue(faker => faker.word.noun())
+  name: string;
+}
+
+class Photo {
+  @FactoryValue(faker => faker.image.url())
+  url: string;
+
+  @FactoryType(() => [Tag])
+  tags: Tag[];
+}
+
+class User {
+  @FactoryType(() => AutoIncrement)
+  id: number;
+
+  @FactoryValue(faker => faker.person.fullName())
+  name: string;
+
+  @FactoryType(() => [Photo])
+  photos: Photo[];
+}
+
+const userWithTaggedPhotos = factory
+  .one(User)
+  .with(4, 'photos')
+  .with(2, 'photos.tags')
+  .make();
+```
+
+<Callout>
+  Always call `.with()` on the parent path before overriding children with `.set()` or excluding with `.without()`.
+</Callout>

@@ -1,0 +1,31 @@
+---
+title: Built‑in JavaScript types
+description: Use FactoryType to generate sensible defaults for primitives
+---
+
+Decorated Factory can generate sensible defaults for JavaScript primitives out of the box using `@FactoryType`.
+
+```ts
+class Document {
+  @FactoryType(() => String)
+  title: string;
+
+  @FactoryType(() => Number)
+  version: number;
+
+  @FactoryType(() => Boolean)
+  isPublished: boolean;
+
+  @FactoryType(() => Date)
+  createdAt: Date;
+
+  @FactoryType(() => [String])
+  tags: string[];
+}
+
+const document = factory.one(Document).with(3, 'tags').make();
+```
+
+<Callout>
+  Works with `.one()`/`.many()`, `.with()` for arrays, and returns instances with `.make()` or plain objects with `.plain()`.
+</Callout>

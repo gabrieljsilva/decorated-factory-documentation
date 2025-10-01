@@ -1,0 +1,34 @@
+---
+title: Key binding (foreign keys)
+description: Bind parent and child keys using options on FactoryType
+---
+
+Bind a parent's key to a child's inverse key for non-standard foreign key names.
+
+```ts
+class Photo {
+  @FactoryValue(faker => faker.image.url())
+  url: string;
+
+  userId: number; // copied from parent User.id
+}
+
+class User {
+  @FactoryType(() => AutoIncrement)
+  id: number;
+
+  @FactoryValue(faker => faker.person.fullName())
+  name: string;
+
+  @FactoryType(() => [Photo], { key: 'id', inverseKey: 'userId' })
+  photos: Photo[];
+}
+
+const userWithPhotos = factory.one(User).with(5, 'photos').make();
+```
+
+Rules:
+
+1. `key` must exist on the parent.
+2. `inverseKey` must exist on the child.
+3. Works for one‑to‑one and one‑to‑many.

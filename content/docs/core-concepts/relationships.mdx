@@ -1,133 +1,71 @@
 ---
-title: Entity Relationships
-description: Model and generate interconnected entities with type-safe relationship management
+title: Entity relationships
+description: Model and generate interconnected entities using builder and decorators
 ---
 
-## Defining Base Entities
+## Defining base entities
 
-Begin by creating plain classes that represent your domain models. Decorators declare which fields should be populated by the factory.
+Use decorators to declare how fields are generated.
 
-```typescript
+```ts
 class Product {
-  @FactoryField(faker => faker.commerce.productName())
+  @FactoryValue(faker => faker.commerce.productName())
   name: string;
 
-  @FactoryField(faker => faker.commerce.price())
+  @FactoryValue(faker => Number(faker.commerce.price()))
   price: number;
 }
 
 class Customer {
-  @FactoryField(faker => faker.internet.email())
+  @FactoryValue(faker => faker.internet.email())
   email: string;
 
-  @FactoryField(faker => faker.name.findName())
+  @FactoryValue(faker => faker.person.fullName())
   fullName: string;
 }
 ```
 
-## Establishing Relations
+## Establishing relations
 
-Use the `@FactoryRelationField` decorator to link one entity to another. The factory will handle instantiation and foreign-key assignment.
+Use `@FactoryType` to link entities.
 
-```typescript
+```ts
 class Order {
-  @FactoryField(faker => faker.number.int())
+  @FactoryValue(faker => faker.number.int())
   id: number;
 
-  @FactoryRelationField(() => Customer)
+  @FactoryType(() => Customer)
   customer: Customer;
 
-  @FactoryRelationField(() => Product)
+  @FactoryType(() => Product)
   product: Product;
 }
 ```
 
-## Generating Instances
+## Generating instances
 
-Instantiate connected objects in one call. Pass `true` or nested options to enable related entity creation.
+Instantiate connected objects by opting in with `.with()`.
 
-```typescript
+```ts
+import { Factory } from 'decorated-factory';
+import { faker } from '@faker-js/faker';
+
 const factory = new Factory(faker);
-const order = factory.new(Order, { customer: true, product: true });
+const order = factory.one(Order)
+  .with('customer')
+  .with('product')
+  .make();
 
 console.log(order.customer.fullName);
 console.log(order.product.name);
 ```
 
+## Nested relationship chains
 
-## Nested Relationship Chains
+For deep graphs, see Advanced Guides: /docs/advanced-guides/nested-relationships
 
-Deeply nest relationships to any depth. Below is an example where a `User` has an `Avatar` which in turn has an associated `Upload`.
+## Key binding
 
-```typescript
-class Upload {
-  @FactoryField(faker => faker.system.fileName())
-  filename: string;
-
-  @FactoryField(faker => faker.system.fileSize())
-  size: number;
-}
-
-class Avatar {
-  @FactoryRelationField(() => Upload)
-  file: Upload;
-}
-
-class User {
-  @FactoryField(faker => faker.internet.userName())
-  username: string;
-
-  @FactoryRelationField(() => Avatar)
-  avatar: Avatar;
-}
-
-const factory = new Factory(faker);
-const user = factory.new(User, {
-  avatar: { file: true }
-});
-
-console.log(user.avatar.file.filename);
-```
-
-## Key Binding
-
-When your entities use non-standard foreign key names, you can explicitly bind a parent’s key field to a child’s inverse key. This ensures the factory populates relational IDs correctly.
-
-```typescript
-class OrderItem {
-  @FactoryField(faker => faker.number.int())
-  id: number;
-
-  @FactoryField(faker => faker.number.int())
-  orderId: number;
-
-  @FactoryField(faker => faker.commerce.productName())
-  productName: string;
-
-  @FactoryField(faker => faker.number.int())
-  quantity: number;
-}
-
-class Order {
-  @FactoryField(faker => faker.number.int())
-  id: number;
-
-  @FactoryField(faker => faker.date.recent().getTime())
-  createdAt: number;
-
-  @FactoryRelationField(() => OrderItem, {
-    key: 'id',
-    inverseKey: 'orderId'
-  })
-  items: OrderItem[];
-}
-
-const factory = new Factory(faker);
-const order = factory.new(Order, { items: 3 });
-
-console.log(order.items.length);
-console.log(order.items[0].orderId === order.id);
-
-```
+For foreign-key binding, see Advanced Guides: /docs/advanced-guides/key-binding
 
 
