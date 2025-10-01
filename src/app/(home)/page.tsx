@@ -35,7 +35,11 @@ export default function HomePage() {
 						Built for Developer Experience
 					</h2>
 					<p className="text-lg md:text-xl text-fd-muted-foreground mb-12 max-w-3xl mx-auto">
-						Decorated Factory was crafted by developers, for developers. The focus is on a great DX/UX: a clean, declarative TypeScript API with intuitive decorators that make generating realistic test data fast, predictable, and type-safe—without extra boilerplate or hidden magic.
+						Decorated Factory was crafted by developers, for developers. The
+						focus is on a great DX/UX: a clean, declarative TypeScript API with
+						intuitive decorators that make generating realistic test data fast,
+						predictable, and type-safe—without extra boilerplate or hidden
+						magic.
 					</p>
 
 					<div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -98,7 +102,8 @@ export default function HomePage() {
 					<div className="flex-1 bg-fd-muted/30 p-6 rounded-xl overflow-auto">
 						<CodeBlock
 							language={"typescript"}
-							code={`class Product {
+							code={`
+class Product {
   @FactoryField((faker) => faker.number.int())
   id: number;
 
@@ -107,7 +112,7 @@ export default function HomePage() {
 }
 
 const factory = new Factory(faker);
-const product = factory.new(Product);
+const product = factory.one(Product).make();
 
 // product = { id: 42, name: "Ergonomic Wooden Chair" }`}
 						/>
