@@ -3,7 +3,11 @@ title: Key binding (foreign keys)
 description: Bind parent and child keys using options on FactoryType
 ---
 
+## Overview
+
 Bind a parent's key to a child's inverse key for non-standard foreign key names.
+
+## Example
 
 ```ts
 class Photo {
@@ -27,7 +31,7 @@ class User {
 const userWithPhotos = factory.one(User).with(5, 'photos').make();
 ```
 
-Rules:
+## Rules
 
 1. `key` must exist on the parent.
 2. `inverseKey` must exist on the child.

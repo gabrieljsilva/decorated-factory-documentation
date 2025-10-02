@@ -3,11 +3,15 @@ title: Error handling
 description: Common validation errors and how to avoid them
 ---
 
+## Overview
+
 Decorated Factory fails fast with clear errors when you:
 
 - Supply a negative amount to `.with()` or `.many().make()`.
 - Call `.set()` for a nested path without its parent `.with()`.
 - Try to generate an array of `AutoIncrement` values (unsupported by design).
+
+## Examples
 
 ```ts
 // Examples
@@ -21,6 +25,8 @@ class T {
 }
 // building an array of AutoIncrement throws
 ```
+
+## Tips
 
 <Callout type="warning">
   Always `.with()` nested relations before overriding/excluding inside them, and use non-negative amounts when sizing arrays.

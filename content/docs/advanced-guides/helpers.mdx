@@ -3,12 +3,18 @@ title: Helpers
 description: AutoIncrement and UUID helpers for convenient identifiers
 ---
 
+## Overview
+
 Use helpers with `@FactoryType` to generate common identifiers.
+
+## Helper table
 
 | Helper | Produces | Example |
 | --- | --- | --- |
 | `AutoIncrement` | Sequential integers starting at 1 (per builder) | `1, 2, 3…` |
 | `UUID` | RFC‑4122 v4 UUID strings | `d7f3e429‑9d5b‑42f9‑b7de‑8ba0e50bc9f6` |
+
+## Example
 
 ```ts
 class Task {
@@ -21,6 +27,8 @@ class Task {
 
 const task = factory.one(Task).make();
 ```
+
+## Limitations
 
 <Callout>
   `AutoIncrement` is not supported for arrays. Generating an array of auto-incremented values will throw by design.

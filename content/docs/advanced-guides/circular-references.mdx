@@ -3,7 +3,11 @@ title: Circular references
 description: Model and generate explicit circular relations safely
 ---
 
+## Overview
+
 Use dot paths to explicitly opt into cycles. Only the branches you request are created.
+
+## Example
 
 ```ts
 class User {
@@ -34,6 +38,8 @@ const circular = factory
   .with('photo.user')
   .make();
 ```
+
+## Safety notes
 
 <Callout>
   Because relations are lazy and opt-in, there is no infinite recursion: only the explicitly requested nodes are built.

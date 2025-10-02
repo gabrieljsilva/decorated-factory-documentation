@@ -3,7 +3,11 @@ title: Nested relationships
 description: Use dot-paths with .with() to generate deep graphs on demand
 ---
 
+## Overview
+
 Request deep relations via dot paths. Only requested branches are materialized.
+
+## Example
 
 ```ts
 class Upload {
@@ -36,6 +40,8 @@ const complexUser = factory
   .with('photos.upload')
   .make();
 ```
+
+## Multiple nested arrays
 
 Multiple nested arrays are supported:
 
@@ -70,6 +76,8 @@ const userWithTaggedPhotos = factory
   .with(2, 'photos.tags')
   .make();
 ```
+
+## Notes
 
 <Callout>
   Always call `.with()` on the parent path before overriding children with `.set()` or excluding with `.without()`.
